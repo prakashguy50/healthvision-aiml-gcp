@@ -1,0 +1,34 @@
+# Ignore node modules and other system files
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignore Git-related files
+.git/
+.gitignore
+
+# Ignore Docker-related files
+.dockerignore
+Dockerfile
+
+# Ignore build and IDE files
+*.swp
+*.swo
+*.DS_Store
+*.env
+.vscode/
+.idea/
+
+# Ignore logs and temporary files
+*.log
+tmp/
+coverage/
+dist/
+
+# Ignore Google Cloud-related files
+.gcloud/
+*.json
+/home/prakashguy50/.docker/config.json
+
+# Ignore build artifacts
+target/
