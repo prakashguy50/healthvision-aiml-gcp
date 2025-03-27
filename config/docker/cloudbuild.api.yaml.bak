@@ -1,9 +1,5 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/image-service-repo/image-service:latest',
-      '-f', 'config/docker/Dockerfile.api', '.'
-    ]
-
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/image-service', '-f', 'config/docker/Dockerfile.api', '.']
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/image-service-repo/image-service:latest'
+  - 'gcr.io/$PROJECT_ID/image-service'

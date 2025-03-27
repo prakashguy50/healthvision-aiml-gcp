@@ -1,20 +1,5 @@
-substitutions:
-  _TAG: 'latest'
-  _REPO: 'image-service-repo'
-
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build',
-      '--cache-from', 'us-central1-docker.pkg.dev/$PROJECT_ID/${_REPO}/image-service:${_TAG}',
-      '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/${_REPO}/image-service:${_TAG}',
-      '-f', 'config/docker/Dockerfile.api', '.'
-    ]
-
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/image-service', '-f', 'config/docker/Dockerfile.api', '.']
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/${_REPO}/image-service:${_TAG}'
-
-options:
-  logging: CLOUD_LOGGING_ONLY
-
-timeout: '1200s' # Set a timeout of 20 minutes (optional, adjust as needed)
+  - 'gcr.io/$PROJECT_ID/image-service'
