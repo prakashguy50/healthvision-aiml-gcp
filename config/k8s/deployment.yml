@@ -54,4 +54,4 @@ metadata:
   name: app-config
 data:
   gcs.bucket: "healthvision-data-bucket"
-  pubsub.topic: "image-processed"
+  pubsub.topic: "image-processed"# Trigger deployment Thu Mar 27 18:01:32 IST 2025
