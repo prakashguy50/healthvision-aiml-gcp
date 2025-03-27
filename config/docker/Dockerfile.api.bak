@@ -1,0 +1,11 @@
+# Start with distroless Java image
+FROM gcr.io/distroless/java17-debian11:latest
+
+# Add non-root user
+USER 1001:1001
+
+WORKDIR /app
+COPY --from=builder --chown=1001:1001 /app ./
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "org.springframework.boot.loader.JarLauncher"]

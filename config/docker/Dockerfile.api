@@ -1,11 +1,29 @@
-# Start with distroless Java image
+# Stage 1: Builder
+FROM eclipse-temurin:17-jdk AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files (adjust as needed)
+COPY . .
+
+# Build the application (assumes a Maven-based Spring Boot project)
+RUN ./mvnw clean package -DskipTests
+
+# Stage 2: Final Image
 FROM gcr.io/distroless/java17-debian11:latest
 
 # Add non-root user
 USER 1001:1001
 
+# Set working directory
 WORKDIR /app
-COPY --from=builder --chown=1001:1001 /app ./
 
+# Copy the built JAR from the builder stage
+COPY --from=builder --chown=1001:1001 /app/target/*.jar ./app.jar
+
+# Expose port
 EXPOSE 8080
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "org.springframework.boot.loader.JarLauncher"]
+
+# Run the application
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
