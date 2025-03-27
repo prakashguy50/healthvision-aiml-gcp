@@ -34,9 +34,10 @@ jobs:
         gcloud auth configure-docker us-central1-docker.pkg.dev
 
     - name: Build and Push API Docker Image to Artifact Registry
-  run: |
-    gcloud builds submit D:/Prakash/Projects/healthvision-ai-gcp/ \
-      --config=config/docker/cloudbuild.api.yaml
+      run: |
+        gcloud builds submit D:/Prakash/Projects/healthvision-ai-gcp/ \
+          --config=D:/Prakash/Projects/healthvision-ai-gcp/config/docker/cloudbuild.api.yaml
+
 
 
     - name: Configure kubectl
