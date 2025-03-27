@@ -1,0 +1,42 @@
+package com.healthvision.llmservice.client;
+
+import com.google.cloud.vertexai.VertexAI;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
+import com.google.cloud.vertexai.generativeai.ContentMaker;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.PartMaker;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class VertexAIClient {
+    private final String projectId;
+    private final String location;
+    private final String modelName;
+
+    public VertexAIClient(
+            @Value("${gcp.project-id}") String projectId,
+            @Value("${gcp.region}") String location,
+            @Value("${vertex.ai.model}") String modelName) {
+        this.projectId = projectId;
+        this.location = location;
+        this.modelName = modelName;
+    }
+
+    public String generateDiagnosticInsights(String findings) {
+        try (VertexAI vertexAI = new VertexAI(projectId, location)) {
+            GenerativeModel model = new GenerativeModel(modelName, vertexAI);
+            
+            GenerateContentResponse response = model.generateContent(
+                ContentMaker.fromMultiModalData(
+                    PartMaker.fromText("Based on these ultrasound findings: " + findings + 
+                    " provide potential diagnoses with confidence levels.")
+                )
+            );
+            
+            return response.getCandidates(0).getContent().getParts(0).getText();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate insights", e);
+        }
+    }
+}

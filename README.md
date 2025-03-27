@@ -14,3 +14,6 @@ A production-ready healthcare AI pipeline with Spring Boot, GCP, and ML integrat
 2. Run `make init` to initialize infrastructure
 3. Run `make build` to build services
 4. Run `make deploy` to deploy to Kubernetes
+
+## Architecture
+![System Architecture](docs/diagrams/architecture.png)

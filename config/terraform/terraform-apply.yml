@@ -1,0 +1,35 @@
+name: Terraform Apply
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'config/terraform/**'
+      
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - uses: actions/checkout@v4
+      
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      
+    - name: Terraform Init
+      working-directory: config/terraform
+      run: terraform init
+      
+    - name: Terraform Validate
+      working-directory: config/terraform
+      run: terraform validate
+      
+    - name: Terraform Plan
+      working-directory: config/terraform
+      run: terraform plan -var="gcp_project=${{ secrets.GCP_PROJECT_ID }}"
+      
+    - name: Terraform Apply
+      working-directory: config/terraform
+      run: terraform apply -auto-approve -var="gcp_project=${{ secrets.GCP_PROJECT_ID }}"
