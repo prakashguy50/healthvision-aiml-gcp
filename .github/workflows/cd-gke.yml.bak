@@ -1,4 +1,4 @@
-name: GKE Deployment
+name: GKE Auto Deployment for HealthVision
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
     paths:
       - 'config/k8s/**'
       - '.github/workflows/cd-gke.yml'
-      - 'services/**'  # Add this to trigger on service changes
+      - 'services/**'  # Trigger on service changes
   workflow_dispatch:   # Allow manual triggers
   schedule:
-    - cron: '0 12 * * *'  # Daily at 12PM UTC (optional)
-      
+    - cron: '0 12 * * *'  # Daily at 12PM UTC
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -30,8 +30,7 @@ jobs:
     - name: Install gke-gcloud-auth-plugin
       run: |
         sudo apt-get update
-        sudo apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin
-
+        sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
       
     - name: Configure kubectl
       run: |
