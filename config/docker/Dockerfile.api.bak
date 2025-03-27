@@ -4,15 +4,15 @@ FROM eclipse-temurin:17-jdk AS builder
 WORKDIR /app
 
 # Copy Maven Wrapper and other required files
-COPY mvnw ./  # Copies the Maven wrapper script
-COPY .mvn ./  # Copies the .mvn file instead of treating it as a directory
-COPY pom.xml ./  # Copies the Maven pom.xml file
+COPY mvnw /app/mvnw
+COPY .mvn /app/.mvn
+COPY pom.xml /app/pom.xml
 
 # Download Maven dependencies (layer caching optimization)
 RUN chmod +x mvnw && ./mvnw dependency:resolve
 
 # Copy the entire project
-COPY . .  # Copies the remaining project files
+COPY . /app
 
 # Build the application
 RUN ./mvnw clean package -DskipTests
@@ -24,7 +24,7 @@ USER 1001:1001
 WORKDIR /app
 
 # Copy the built JAR from the builder stage
-COPY --from=builder --chown=1001:1001 /app/target/*.jar ./app.jar
+COPY --from=builder --chown=1001:1001 /app/target/*.jar /app/app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
