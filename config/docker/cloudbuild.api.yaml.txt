@@ -1,6 +1,4 @@
-steps:
 - name: Build and Push API Docker Image to Artifact Registry
   run: |
     gcloud builds submit D:/Prakash/Projects/healthvision-ai-gcp/ \
-      --config=config/docker/cloudbuild.api.yaml
-
+      --config=D:/Prakash/Projects/healthvision-ai-gcp/config/docker/cloudbuild.api.yaml
