@@ -35,8 +35,9 @@ jobs:
 
     - name: Build and Push API Docker Image to Artifact Registry
       run: |
-        gcloud builds submit --tag us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/image-service-repo/image-service:latest \
-        --dockerfile=config/docker/dockerfile.api D:/Prakash/Projects/healthvision-ai-gcp/
+        gcloud builds submit D:/Prakash/Projects/healthvision-ai-gcp/ \
+          --tag us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/image-service-repo/image-service:latest \
+          --config=config/docker/cloudbuild.api.yaml
 
     - name: Configure kubectl
       run: |

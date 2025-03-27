@@ -33,9 +33,10 @@ jobs:
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev
 
-    - name: Build and Push Docker Image to Artifact Registry
+    - name: Build and Push API Docker Image to Artifact Registry
       run: |
-        gcloud builds submit --tag us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/image-service-repo/image-service:latest
+        gcloud builds submit --tag us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/image-service-repo/image-service:latest \
+        --dockerfile=config/docker/dockerfile.api D:/Prakash/Projects/healthvision-ai-gcp/
 
     - name: Configure kubectl
       run: |
@@ -47,8 +48,8 @@ jobs:
       run: |
         set -e
         kubectl apply -f config/k8s/ -R
-        kubectl rollout status deployment/image-service
-        kubectl rollout status deployment/api-gateway
+        kubectl rollout status deployment/image-service || exit 1
+        kubectl rollout status deployment/api-gateway || exit 1
 
     - name: Debug
       run: |
