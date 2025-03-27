@@ -1,13 +1,11 @@
-FROM eclipse-temurin:17-jdk-jammy as builder
-WORKDIR application
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} application.jar
-RUN java -Djarmode=layertools -jar application.jar extract
+# Start with distroless Java image
+FROM gcr.io/distroless/java17-debian11:latest
 
-FROM eclipse-temurin:17-jre-jammy
-WORKDIR application
-COPY --from=builder application/dependencies/ ./
-COPY --from=builder application/spring-boot-loader/ ./
-COPY --from=builder application/snapshot-dependencies/ ./
-COPY --from=builder application/application/ ./
-ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+# Add non-root user
+USER 1001:1001
+
+WORKDIR /app
+COPY --from=builder --chown=1001:1001 /app ./
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "org.springframework.boot.loader.JarLauncher"]

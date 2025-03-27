@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  title: HealthVision AI API
+  version: 1.0.0
+
+paths:
+  /api/images:
+    post:
+      summary: Upload DICOM image
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                patientId:
+                  type: string
+      responses:
+        '200':
+          description: Image processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageAnalysis'
+
+components:
+  schemas:
+    ImageAnalysis:
+      type: object
+      properties:
+        imageId:
+          type: string
+        findings:
+          type: string
+        diagnosis:
+          type: string

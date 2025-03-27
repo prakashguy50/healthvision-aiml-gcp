@@ -1,0 +1,17 @@
+{
+  "displayName": "HealthVision Metrics",
+  "gridLayout": {
+    "widgets": [
+      {
+        "title": "Image Processing Latency",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": {
+              "query": "custom.googleapis.com/image_processing_latency"
+            }
+          }]
+        }
+      }
+    ]
+  }
+}

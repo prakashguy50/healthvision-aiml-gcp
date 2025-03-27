@@ -1,0 +1,22 @@
+resource "google_project_iam_binding" "storage_secure" {
+  project = var.gcp_project
+  role    = "roles/storage.objectViewer"
+  members = [
+    "serviceAccount:${google_service_account.ml_service.email}",
+  ]
+}
+
+resource "google_kms_key_ring" "healthvision_keyring" {
+  name     = "healthvision-keyring"
+  location = "global"
+}
+
+resource "google_kms_crypto_key" "healthvision_key" {
+  name            = "healthvision-key"
+  key_ring        = google_kms_key_ring.healthvision_keyring.id
+  rotation_period = "7776000s" # 90 days
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
