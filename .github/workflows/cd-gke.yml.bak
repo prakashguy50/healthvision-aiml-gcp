@@ -6,16 +6,16 @@ on:
     paths:
       - 'config/k8s/**'
       - '.github/workflows/cd-gke.yml'
-      - 'services/**'  # Trigger on service changes
-  workflow_dispatch:   # Allow manual triggers
+      - 'services/**'
+  workflow_dispatch:
   schedule:
-    - cron: '0 12 * * *'  # Daily at 12PM UTC (optional)
+    - cron: '0 12 * * *'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
     - uses: actions/checkout@v4
       
@@ -26,17 +26,15 @@ jobs:
         
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
-      
-    - name: Enable gke-gcloud-auth-plugin
-      run: |
-        export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-      
+      with:
+        install_components: 'gke-gcloud-auth-plugin'
+        
     - name: Configure kubectl
       run: |
         gcloud container clusters get-credentials healthvision-cluster \
           --region us-central1-a \
           --project ${{ secrets.GCP_PROJECT_ID }}
-          
+        
     - name: Deploy to GKE
       run: |
         kubectl apply -f config/k8s/ -R

@@ -29,6 +29,10 @@ jobs:
       with:
         install_components: 'gke-gcloud-auth-plugin'
         
+    - name: Configure Docker for Artifact Registry
+      run: |
+        gcloud auth configure-docker
+
     - name: Configure kubectl
       run: |
         gcloud container clusters get-credentials healthvision-cluster \
@@ -37,6 +41,11 @@ jobs:
         
     - name: Deploy to GKE
       run: |
+        set -e
         kubectl apply -f config/k8s/ -R
         kubectl rollout status deployment/image-service
         kubectl rollout status deployment/api-gateway
+
+    - name: Debug
+      run: |
+        kubectl get pods -n default
