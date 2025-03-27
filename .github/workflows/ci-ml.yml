@@ -32,7 +32,7 @@ jobs:
         python -m pytest model_training/tests/ -v --cov=model_training --cov-report=xml
         
     - name: Upload coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v5
       
   deploy-model:
     needs: test-ml
