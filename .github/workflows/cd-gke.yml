@@ -1,3 +1,5 @@
+# Recreate the file with proper indentation
+cat > .github/workflows/cd-gke.yml << 'EOF'
 name: GKE Deployment
 
 on:
@@ -32,5 +34,4 @@ jobs:
     - name: Deploy to GKE
       run: |
         kubectl apply -f config/k8s/ -R
-        kubectl rollout status deployment/image-service
-        kubectl rollout status deployment/api-gateway
+        kubectl rollout status deployment/image
