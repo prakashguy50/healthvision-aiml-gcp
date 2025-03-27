@@ -32,12 +32,12 @@ jobs:
     - name: Configure Docker for Artifact Registry
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev
-
+        
     - name: Build and Push API Docker Image to Artifact Registry
-       run: |
-        gcloud builds submit . --config=config/docker/cloudbuild.api.yaml
-
-
+      run: |
+        gcloud builds submit . \
+          --config=config/docker/cloudbuild.api.yaml
+        
     - name: Configure kubectl
       run: |
         gcloud container clusters get-credentials healthvision-cluster \
@@ -50,7 +50,7 @@ jobs:
         kubectl apply -f config/k8s/ -R
         kubectl rollout status deployment/image-service || exit 1
         kubectl rollout status deployment/api-gateway || exit 1
-
+        
     - name: Debug
       run: |
         kubectl get pods -n default
