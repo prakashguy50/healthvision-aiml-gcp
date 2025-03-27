@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: image-service
-        image: gcr.io/${GCP_PROJECT_ID}/image-service:latest
+        image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/image-service:latest
         ports:
         - containerPort: 8080
         env:

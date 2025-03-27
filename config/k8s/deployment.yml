@@ -4,6 +4,7 @@ metadata:
   name: image-service
 spec:
   replicas: 3
+  progressDeadlineSeconds: 600  # Increased progress deadline
   selector:
     matchLabels:
       app: image-service
@@ -17,7 +18,7 @@ spec:
     spec:
       containers:
       - name: image-service
-        image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/image-service:latest
+        image: gcr.io/${GCP_PROJECT_ID}/image-service:latest  # Corrected format
         ports:
         - containerPort: 8080
         env:
@@ -50,7 +51,7 @@ spec:
           periodSeconds: 10
           failureThreshold: 3
         imagePullPolicy: Always
-      restartPolicy: Always
+  restartPolicy: Always
 ---
 apiVersion: v1
 kind: ConfigMap
