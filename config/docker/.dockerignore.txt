@@ -11,6 +11,8 @@ yarn-error.log
 .dockerignore
 Dockerfile
 
+!.mvn
+
 # Ignore build and IDE files
 *.swp
 *.swo
