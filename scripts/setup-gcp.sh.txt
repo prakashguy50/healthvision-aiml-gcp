@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Initialize GCP resources
+gcloud services enable \
+  container.googleapis.com \
+  pubsub.googleapis.com \
+  aiplatform.googleapis.com \
+  storage.googleapis.com
+
+# Create service account
+gcloud iam service-accounts create healthvision-sa \
+  --display-name="HealthVision Service Account"
+
+# Grant permissions
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:healthvision-sa@$PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/aiplatform.user"
+
+# Create storage bucket
+gsutil mb -l $REGION gs://$PROJECT_ID-healthvision-data

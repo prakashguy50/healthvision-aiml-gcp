@@ -1,0 +1,26 @@
+@startuml HealthVision Architecture
+!include <cloudinsight/gcp>
+!include <cloudinsight/k8s>
+
+title HealthVision AI Architecture
+
+component "API Gateway" as gateway
+component "Image Service" as image_service
+component "LLM Service" as llm_service
+
+database "PostgreSQL" as db
+cloud "GCP" {
+    component "Cloud Storage" as gcs
+    component "Pub/Sub" as pubsub
+    component "Vertex AI" as vertex
+}
+
+gateway --> image_service : /api/images
+gateway --> llm_service : /api/llm
+image_service --> gcs : Store/retrieve
+image_service --> pubsub : Events
+image_service --> vertex : Predictions
+llm_service --> vertex : LLM queries
+image_service --> db : Metadata
+
+@enduml
