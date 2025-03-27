@@ -6,6 +6,10 @@ on:
     paths:
       - 'config/k8s/**'
       - '.github/workflows/cd-gke.yml'
+      - 'services/**'  # Add this to trigger on service changes
+  workflow_dispatch:   # Allow manual triggers
+  schedule:
+    - cron: '0 12 * * *'  # Daily at 12PM UTC (optional)
       
 jobs:
   deploy:
