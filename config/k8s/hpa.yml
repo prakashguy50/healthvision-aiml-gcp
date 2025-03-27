@@ -1,3 +1,4 @@
+# config/k8s/hpa.yml
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -16,3 +17,10 @@ spec:
       target:
         type: Utilization
         averageUtilization: 70
+  - type: External
+    external:
+      metric:
+        name: custom.googleapis.com|ml_requests
+      target:
+        type: AverageValue
+        averageValue: 1000

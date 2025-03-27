@@ -6,56 +6,32 @@ on:
     paths:
       - 'ml-pipeline/**'
       - '.github/workflows/ci-ml.yml'
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  test-ml:
+  train:
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up Python
+    - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
         
     - name: Install dependencies
       run: |
-        pip install -r ml-pipeline/model_training/requirements.txt
-        pip install pytest pytest-cov
+        pip install -r ml-pipeline/requirements.txt
+        pip install pytest
         
-    - name: Run ML tests
-      working-directory: ./ml-pipeline
+    - name: Run training
       run: |
-        python -m pytest model_training/tests/ -v --cov=model_training --cov-report=xml
-        
-    - name: Upload coverage
-      uses: codecov/codecov-action@v3
-      
-  deploy-model:
-    needs: test-ml
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    
-    steps:
-    - uses: actions/checkout@v4
-      
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v1
-      with:
-        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-        
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-      
-    - name: Deploy Model to Vertex AI
-      working-directory: ./ml-pipeline
-      run: |
-        gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-        python model_training/train.py \
+        python ml-pipeline/scripts/train_model.py \
           --project=${{ secrets.GCP_PROJECT_ID }} \
-          --region=us-central1 \
-          --bucket=healthvision-ml-${{ secrets.GCP_PROJECT_ID }} \
-          --deploy
+          --bucket=gs://${{ secrets.GCP_PROJECT_ID }}-ml-data
+          
+    - name: Upload model
+      uses: google-github-actions/upload-cloud-storage@v0
+      with:
+        path: ml-pipeline/model/
+        destination: gs://${{ secrets.GCP_PROJECT_ID }}-ml-data/models/

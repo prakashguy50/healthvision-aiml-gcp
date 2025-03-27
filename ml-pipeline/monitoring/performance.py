@@ -1,37 +1,38 @@
-from google.cloud import monitoring_v3
-import time
+from google.cloud import bigquery
+import pandas as pd
+import argparse
 
-def log_metrics(project_id, model_id, metrics):
+def track_model_performance(project_id: str, dataset_id: str):
+    """Track and analyze model performance over time"""
+    client = bigquery.Client(project=project_id)
+    
+    query = f"""
+    SELECT
+        model_version,
+        AVG(accuracy) as avg_accuracy,
+        AVG(latency) as avg_latency,
+        COUNT(*) as prediction_count
+    FROM `{project_id}.{dataset_id}.predictions`
+    WHERE timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)
+    GROUP BY 1
+    ORDER BY 2 DESC
     """
-    Log model performance metrics to Cloud Monitoring
-    """
-    client = monitoring_v3.MetricServiceClient()
-    project_name = f"projects/{project_id}"
     
-    series = monitoring_v3.TimeSeries()
-    series.resource.type = "generic_task"
-    series.resource.labels["project_id"] = project_id
-    series.resource.labels["location"] = "global"
-    series.resource.labels["namespace"] = "healthvision"
-    series.resource.labels["job"] = f"ml-model-{model_id}"
+    results = client.query(query).to_dataframe()
     
-    now = time.time()
-    seconds = int(now)
-    nanos = int((now - seconds) * 10**9)
+    # Identify performance degradation
+    baseline = results['avg_accuracy'].max()
+    for _, row in results.iterrows():
+        if row['avg_accuracy'] < baseline * 0.9:  # 10% degradation
+            send_alert(
+                project_id,
+                f"Model {row['model_version']} performance degraded to {row['avg_accuracy']:.2f}"
+            )
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--project_id", required=True)
+    parser.add_argument("--dataset_id", required=True)
+    args = parser.parse_args()
     
-    for metric_name, metric_value in metrics.items():
-        point = monitoring_v3.Point({
-            "interval": {
-                "end_time": {
-                    "seconds": seconds,
-                    "nanos": nanos
-                }
-            },
-            "value": {
-                "double_value": metric_value
-            }
-        })
-        
-        series.metric.type = f"custom.googleapis.com/ml_models/{metric_name}"
-        series.points = [point]
-        client.create_time_series(name=project_name, time_series=[series])
+    track_model_performance(args.project_id, args.dataset_id)

@@ -1,0 +1,25 @@
+{
+  "displayName": "HealthVision Metrics",
+  "gridLayout": {
+    "widgets": [
+      {
+        "title": "API Latency",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": {
+              "query": "custom.googleapis.com/api_latency"
+            }
+          }]
+        }
+      },
+      {
+        "title": "Model Performance",
+        "scorecard": {
+          "timeSeriesQuery": {
+            "query": "custom.googleapis.com/ml_accuracy"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -4,7 +4,6 @@ metadata:
   name: image-service
 spec:
   replicas: 3
-  progressDeadlineSeconds: 600  # Increased progress deadline
   selector:
     matchLabels:
       app: image-service
@@ -14,21 +13,12 @@ spec:
         app: image-service
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "8080"
     spec:
       containers:
       - name: image-service
-        image: gcr.io/${GCP_PROJECT_ID}/image-service:latest  # Corrected format
+        image: gcr.io/PROJECT_ID/image-service:latest
         ports:
         - containerPort: 8080
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: "prod"
-        - name: GCS_BUCKET
-          valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: gcs.bucket
         resources:
           requests:
             cpu: "500m"
@@ -36,27 +26,29 @@ spec:
           limits:
             cpu: "2"
             memory: "4Gi"
-        readinessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 20
-          periodSeconds: 5
-          failureThreshold: 3
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          failureThreshold: 3
-        imagePullPolicy: Always
-  restartPolicy: Always
+        env:
+        - name: GCS_BUCKET
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: gcs.bucket
 ---
-apiVersion: v1
-kind: ConfigMap
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: app-config
-data:
-  gcs.bucket: "healthvision-data-bucket"
-  pubsub.topic: "image-processed"
+  name: api-gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: gcr.io/PROJECT_ID/api-gateway:latest
+        ports:
+        - containerPort: 8080
