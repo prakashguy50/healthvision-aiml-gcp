@@ -1,0 +1,34 @@
+package com.healthvision.llmservice.client;
+
+import com.google.cloud.vertexai.VertexAI;
+import com.google.cloud.vertexai.generativeai.GenerativeModel;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class VertexAIClientTest {
+
+    @Mock
+    private VertexAI vertexAI;
+
+    @Mock
+    private GenerativeModel generativeModel;
+
+    @InjectMocks
+    private VertexAIClient vertexAIClient;
+
+    @Test
+    void generateContent_ShouldReturnResponse() {
+        when(vertexAI.getProjectId()).thenReturn("test-project");
+        when(vertexAI.getLocation()).thenReturn("us-central1");
+        
+        String result = vertexAIClient.generateContent("test prompt");
+        assertNotNull(result);
+    }
+}

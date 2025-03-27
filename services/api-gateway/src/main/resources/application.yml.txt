@@ -1,6 +1,9 @@
 spring:
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
         - id: image-service
           uri: lb://image-service
@@ -10,7 +13,7 @@ spring:
           uri: lb://llm-service
           predicates:
             - Path=/api/llm/**
-            
+
 server:
   port: 8080
 
@@ -18,7 +21,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info, prometheus
+        include: health, metrics
   endpoint:
     health:
       show-details: always

@@ -1,16 +1,15 @@
 spring:
   application:
     name: llm-service
-  cloud:
-    gcp:
-      project-id: ${GCP_PROJECT_ID}
-      vertex:
-        ai:
-          region: ${GCP_REGION}
+
+gcp:
+  project:
+    id: ${GCP_PROJECT_ID}
+  region: ${GCP_REGION}
 
 vertex:
   ai:
-    model: ${VERTEX_AI_MODEL:gemini-pro}
+    model: gemini-pro
 
 server:
-  port: 8080
+  port: 8081

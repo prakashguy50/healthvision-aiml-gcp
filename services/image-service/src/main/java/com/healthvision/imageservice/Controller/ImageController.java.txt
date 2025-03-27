@@ -19,10 +19,8 @@ public class ImageController {
     @PostMapping
     public ResponseEntity<ImageAnalysis> uploadImage(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("patientId") String patientId,
-            @RequestParam(defaultValue = "NORMAL") String priority) {
-        return ResponseEntity.ok(
-            imageService.processImage(file, patientId, Priority.valueOf(priority)));
+            @RequestParam("patientId") String patientId) {
+        return ResponseEntity.ok(imageService.processImage(file, patientId));
     }
     
     @GetMapping("/{id}/analysis")
