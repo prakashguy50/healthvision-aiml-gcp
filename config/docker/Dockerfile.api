@@ -4,11 +4,15 @@ FROM eclipse-temurin:17-jdk AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy project files (adjust as needed)
+# Copy Maven Wrapper files
+COPY mvnw ./
+COPY .mvn .mvn
+
+# Copy project files
 COPY . .
 
-# Build the application (assumes a Maven-based Spring Boot project)
-RUN ./mvnw clean package -DskipTests
+# Make mvnw executable and build the application
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
 # Stage 2: Final Image
 FROM gcr.io/distroless/java17-debian11:latest
