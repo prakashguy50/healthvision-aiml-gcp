@@ -1,9 +1,4 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/image-service-repo/image-service:latest', '-f', 'config/docker/dockerfile.api', '.']
-images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/image-service-repo/image-service:latest'
-
 - name: Build and Push API Docker Image to Artifact Registry
   run: |
     gcloud builds submit D:/Prakash/Projects/healthvision-ai-gcp/ \
