@@ -4,15 +4,15 @@ FROM eclipse-temurin:17-jdk AS builder
 WORKDIR /app
 
 # Copy Maven Wrapper and other required files
-COPY mvnw ./
-COPY .mvn .mvn/
-COPY pom.xml ./
+COPY mvnw ./  # Copies the Maven wrapper script
+COPY .mvn ./  # Copies the .mvn file instead of treating it as a directory
+COPY pom.xml ./  # Copies the Maven pom.xml file
 
 # Download Maven dependencies (layer caching optimization)
 RUN chmod +x mvnw && ./mvnw dependency:resolve
 
 # Copy the entire project
-COPY . .
+COPY . .  # Copies the remaining project files
 
 # Build the application
 RUN ./mvnw clean package -DskipTests
